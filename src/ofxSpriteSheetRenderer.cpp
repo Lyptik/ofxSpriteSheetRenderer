@@ -191,10 +191,24 @@ bool ofxSpriteSheetRenderer::addTile(animation_t* sprite, float x, float y, int 
 			// time to advance frame
 			if(gameTime > sprite->next_tick) {
 				sprite->frame += sprite->frame_skip;
-				// increment frame and keep it within range
-				if(sprite->frame < 0) sprite->frame = sprite->total_frames - 1;
-				if(sprite->frame >= sprite->total_frames) sprite->frame = 0;
-				sprite->next_tick = gameTime + sprite->frame_duration;
+                // increment frame and keep it within range
+                if(sprite->frame < 0){
+                    if (sprite->pingpong){
+                        sprite->frame_skip *= -1;
+                        sprite->frame += 2*sprite->frame_skip;
+                    } else {
+                        sprite->frame = sprite->total_frames - 1;
+                    }
+                }
+                if(sprite->frame >= sprite->total_frames){
+                    if (sprite->pingpong){
+                        sprite->frame_skip *= -1;
+                        sprite->frame += 2*sprite->frame_skip;
+                    } else {
+                        sprite->frame = 0;
+                    }
+                }
+                sprite->next_tick = gameTime + sprite->frame_duration;
 				// decrement loop count if cycle complete
 				if( ((sprite->frame_skip > 0 && sprite->frame == sprite->total_frames-1) || (sprite->frame_skip < 0 && sprite->frame == 0)) && sprite->loops > 0) sprite->loops--;
 			}
@@ -223,9 +237,23 @@ bool ofxSpriteSheetRenderer::addRotatedTile(animation_t* sprite, float x, float 
 			// time to advance frame
 			if(gameTime > sprite->next_tick) {
 				sprite->frame += sprite->frame_skip;
-				// increment frame and keep it within range
-				if(sprite->frame < 0) sprite->frame = sprite->total_frames - 1;
-				if(sprite->frame >= sprite->total_frames) sprite->frame = 0;
+                // increment frame and keep it within range
+                if(sprite->frame < 0){
+                    if (sprite->pingpong){
+                        sprite->frame_skip *= -1;
+                        sprite->frame += 2*sprite->frame_skip;
+                    } else {
+                        sprite->frame = sprite->total_frames - 1;
+                    }
+                }
+                if(sprite->frame >= sprite->total_frames){
+                    if (sprite->pingpong){
+                        sprite->frame_skip *= -1;
+                        sprite->frame += 2*sprite->frame_skip;
+                    } else {
+                        sprite->frame = 0;
+                    }
+                }
 				sprite->next_tick = gameTime + sprite->frame_duration;
 				// decrement loop count if cycle complete
 				if( ((sprite->frame_skip > 0 && sprite->frame == sprite->total_frames-1) || (sprite->frame_skip < 0 && sprite->frame == 0)) && sprite->loops > 0) sprite->loops--;
@@ -256,11 +284,28 @@ bool ofxSpriteSheetRenderer::addCenteredTile(animation_t* sprite, float x, float
 			if(gameTime > sprite->next_tick) {
 				sprite->frame += sprite->frame_skip;
 				// increment frame and keep it within range
-				if(sprite->frame < 0) sprite->frame = sprite->total_frames - 1;
-				if(sprite->frame >= sprite->total_frames) sprite->frame = 0;
+                if(sprite->frame < 0){
+                    if (sprite->pingpong){
+                        sprite->frame_skip *= -1;
+                        sprite->frame += 2*sprite->frame_skip;
+                    } else {
+                        sprite->frame = sprite->total_frames - 1;
+                    }
+                }
+                if(sprite->frame >= sprite->total_frames){
+                    if (sprite->pingpong){
+                        sprite->frame_skip *= -1;
+                        sprite->frame += 2*sprite->frame_skip;
+                    } else {
+                        sprite->frame = 0;
+                    }
+                }
 				sprite->next_tick = gameTime + sprite->frame_duration;
 				// decrement loop count if cycle complete
-				if( ((sprite->frame_skip > 0 && sprite->frame == sprite->total_frames-1) || (sprite->frame_skip < 0 && sprite->frame == 0)) && sprite->loops > 0) sprite->loops--;
+				if( ((sprite->frame_skip > 0 && sprite->frame == sprite->total_frames-1) || (sprite->frame_skip < 0 && sprite->frame == 0)) && sprite->loops > 0)
+                {
+                    sprite->loops--;
+                }
 			}
 	
 	if(sprite->loops == 0 && sprite->final_index >= 0) {
@@ -287,9 +332,23 @@ bool ofxSpriteSheetRenderer::addCenterRotatedTile(animation_t* sprite, float x, 
 			// time to advance frame
 			if(gameTime > sprite->next_tick) {
 				sprite->frame += sprite->frame_skip;
-				// increment frame and keep it within range
-				if(sprite->frame < 0) sprite->frame = sprite->total_frames - 1;
-				if(sprite->frame >= sprite->total_frames) sprite->frame = 0;
+                // increment frame and keep it within range
+                if(sprite->frame < 0){
+                    if (sprite->pingpong){
+                        sprite->frame_skip *= -1;
+                        sprite->frame += 2*sprite->frame_skip;
+                    } else {
+                        sprite->frame = sprite->total_frames - 1;
+                    }
+                }
+                if(sprite->frame >= sprite->total_frames){
+                    if (sprite->pingpong){
+                        sprite->frame_skip *= -1;
+                        sprite->frame += 2*sprite->frame_skip;
+                    } else {
+                        sprite->frame = 0;
+                    }
+                }
 				sprite->next_tick = gameTime + sprite->frame_duration;
 				// decrement loop count if cycle complete
 				if( ((sprite->frame_skip > 0 && sprite->frame == sprite->total_frames-1) || (sprite->frame_skip < 0 && sprite->frame == 0)) && sprite->loops > 0) sprite->loops--;
@@ -816,8 +875,10 @@ void ofxSpriteSheetRenderer::draw(int startLayer, int endLayer)
 	
 	texture->bind();
 	for(int i = startLayer; i <= endLayer; i++)
-		if(numSprites[i] > 0)
-			glDrawArrays(GL_TRIANGLES, i*tilesPerLayer*6, numSprites[i]*6);
+        if(numSprites[i] > 0){
+            glDrawArrays(GL_TRIANGLES, i*tilesPerLayer*6, numSprites[i]*6);
+        }
+			
 	texture->unbind();
 	
 	if(safeMode)

@@ -51,7 +51,8 @@ typedef struct {
 	
 	int loops;                    //								the number of times to loop the animation. -1 means forever, don't set it to 0.
 	int final_index;              //								index of the tile to draw once animation is done. -1 means the default of total_frames-1. 
-	int frame_skip;				 //	 DEFAULT SHOULD BE SET TO 1.	the inverval by which frames are moved between. Generally this should be 1, but could be set to -1 if you wanted the animation to play backwards for example
+	int frame_skip;				  // DEFAULT SHOULD BE SET TO 1.	the inverval by which frames are moved between. Generally this should be 1, but could be set to -1 if you wanted the animation to play backwards for example
+    bool pingpong;                // DEFAULT SHOULD BE SET TO FALSE determines if the animation should go back and forth instead of looping
 } animation_t;
 
 typedef struct {
